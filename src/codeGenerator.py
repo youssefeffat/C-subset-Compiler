@@ -6,7 +6,7 @@ operationsToAssembly = data.operationsToAssembly
 class CodeGenerator:
 
     def __init__(self):
-        pass
+        self.ifLabel = 0
 
     def genCode(self,Node:Node)->None:
         """
@@ -58,6 +58,20 @@ class CodeGenerator:
             print("set", Node.children[0].position)  ##TODO : Position doenst exist!!!
             return
         
+        # Handling if statement (nd_if) with unique label jumpf l1 label, jump l2 label, .l1, .l2
+        elif Node.type=="nd_if":
+            #print("Node : ",Node)
+            self.ifLabel += 1
+            self.genCode(Node.children[0])
+            print(f"jumpf l1 {self.ifLabel}")
+            self.genCode(Node.children[1])
+            if len(Node.children)>2:
+                print("jump l2")
+                print(f".l1 {self.ifLabel}")
+                self.genCode(Node.children[2])
+                print(f".l2 {self.ifLabel}")
+            return
+
         else:
             print("NODE TYPE UNKNOWN -> no assembly transformation ",Node.type)
 
