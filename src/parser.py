@@ -89,7 +89,6 @@ class Parser:
             tk_value = self.tokens[self.currentPosition].value
             if (priority is None or priority<prio):
                 return A1
-            
             self.currentPosition += 1
             A2 = self.e(priority + associativity)
             if (nd_type is None):
@@ -104,7 +103,8 @@ class Parser:
     ## TODO there is an issue with choosing  between the types of the token and the node
     ## TODO : 'int' 'IDENTIFIER' '=' 'E' ';' is not handeled
     def i(self)->Node:
-
+        """
+        """
         # # the case of an :'debug' E ';
         if (self.tokens[self.currentPosition].value == 'debug'):	
             I =  Node("nd_debug",self.tokens[self.currentPosition].value)
@@ -125,7 +125,17 @@ class Parser:
             I = Node("nd_decl",self.tokens[self.currentPosition-1].value)
             self.acceptValue([";"])
             return I
-        
+        # the case of an : if '(' E ')' I (else I)?
+        elif self.checkValue(["if"]):
+            I = Node("nd_if", None)                             #TODO Node Value is None ?????
+            self.acceptValue(["("])
+            I.addChild(self.e(0))
+            self.acceptValue([")"])
+            I.addChild(self.i())
+            if (self.checkValue(["else"])):
+                I.addChild(self.i())
+            return I
+
         # the case of an : E ';'
         else:
             I = Node("nd_drop", None)                           #TODO Node Value is None ?????
