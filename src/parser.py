@@ -135,6 +135,21 @@ class Parser:
             if (self.checkValue(["else"])):
                 I.addChild(self.i())
             return I
+        
+        # the case of an : while '(' E ')' I
+        elif self.checkValue(["while"]):
+            C = Node("nd_if", None)                          #TODO Node Value is None ?????
+            self.acceptValue(["("])
+            E = self.e(0)
+            self.acceptValue([")"])
+            I = self.i()
+            C.addChild(E)
+            C.addChild(I)
+            C.addChild(Node("nd_break", None))
+            L = Node("nd_loop", None)
+            L.addChild(Node("nd_ancre", None))
+            L.addChild(C)
+            return L
 
         # the case of an : E ';'
         else:
