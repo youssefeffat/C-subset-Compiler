@@ -22,11 +22,8 @@ class Semantic:
             return
 
         elif N.type == "nd_decl":
-            # Declare the variable
-            # print("passed by nd_decl | variable : ")
-            # print("Node : ",N)
             S = self.declare(N.value, "int")
-            S.type = "int"  # Assuming we're dealing with onlt ints
+            S.type = "int"  
             S.position = self.nvar
             self.nvar += 1
             return
@@ -39,6 +36,7 @@ class Semantic:
             N.position = S.position
             return
 
+
         elif N.type == "nd_block":
             # Start a new scope
             self.begin()
@@ -47,6 +45,31 @@ class Semantic:
                 self.AnaSem(child)
             # End the current scope
             self.end()
+            return
+        
+        elif N.type == "nd_function": 
+            S = self.declare(N.value, "function")
+            S.type = "function"  
+            # Start a new scope
+            self.begin()
+            self.nvar = 0
+            # Recursively process each child node in the block
+            for child in N.children:
+                self.AnaSem(child)
+            # End the current scope
+            self.end()
+            N.nvar = self.nvar - (N.children.size()-1)
+            return   
+       
+        elif N.type == "nd_function_call":
+            if N.children[0].type != "nd_ref":
+                raise ReferenceError("Expected reference node on the left-hand side of assignment.")
+            S = self.find(N.children[0].value)
+            if S.type != "function":
+                raise KeyError(f"Invalid reference type for {N.value}, expected function.")
+            for child in N.children:
+                if child != N.children[0]:
+                    self.AnaSem(child)
             return
 
         else:

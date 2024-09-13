@@ -45,7 +45,23 @@ class Parser:
             raise SyntaxError(f"Atomic token expected. I got {self.tokens[self.currentPosition]}")
 
     def s(self)->Node:
-        return self.a()
+        """
+        S := A ( '(' ( epsilon|E (','E)* ) ')' )?
+        
+        """
+        A = self.a()
+        if self.checkValue(["("]):
+            S = Node("nd_function_call", None)                          #TODO Node Value is None ????? 
+            S.addChild(A)
+            if (not self.checkValue([")"])):
+                S.addChild(self.e(0))
+                while (not self.checkValue([")"])):
+                    self.acceptValue([","])
+                    S.addChild(self.e(0))
+            return S
+        else:
+            return self.a()
+
 
     def p(self)->Node:
         """
@@ -134,8 +150,28 @@ class Parser:
         return I
 
     def f(self)->Node : 
+        """
+        F: "int" IDENTIFIER "(" "int" IDENTIFIER ("," "int" IDENTIFIER )* ")" ";"
+        
+        """
+        if self.checkValue(["int"]):
+            self.checkType(["IDENTIFIER"])
+            I = Node("nd_decl",self.tokens[self.currentPosition-1].value)
+            if self.checkValue(["("]):
+                # case where 'int' 'IDENT' '(' ')'';'
+                if self.checkValue([")"]):
+                    I.addChild(Node("nd_function", None))
+                    self.checkValue([';'])
+                # case with multiple arguments
+                else:
+                    while (not self.checkValue([")"])):
+                        self.acceptType(["IDENTIFIER"])
+                        self.acceptValue([","])
+                    I.addChild(self.i())
+            else :
+                self.acceptValue([';'])
+            return I
         return self.i()
-
 
     def checkType(self,type: list[str])->bool:
         if (self.tokens[self.currentPosition].type not in type):

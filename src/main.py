@@ -12,24 +12,38 @@ semantic = Semantic()
 # with open(file_path, 'r') as file:
 # 	file_content = file.read()
 # stringFile = "(-(!((3+2))))"
+# test1 = """
+# {	
+# 	int x;
+# 	int y;
+# 	x = 1+1;
+# 	y = 1+2;
+# 	debug x;
+# 	debug y;
+# }
+# {
+	
+# 	int x;
+# 	int y;
+# 	x = 1+3;
+# 	y = 1+4;
+# 	debug x;
+# 	debug y;
+# }
+# """
 stringFile = """
 {
-	
-	int x;
-	int y;
-	x = 1+1;
-	y = 1+2;
-	debug x;
-	debug y;
-}
-{
-	
-	int x;
-	int y;
-	x = 1+3;
-	y = 1+4;
-	debug x;
-	debug y;
+
+int func();
+int func2( int x);
+int func3(int x){};
+int func4(int x, int y){};
+
+int funcCall(int x){return x};
+int x;
+x = funcCall(1);
+debug x;
+
 }
 	
 """

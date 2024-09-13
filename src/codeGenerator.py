@@ -48,7 +48,7 @@ class CodeGenerator:
 
         # Handling variable reference (nd_ref)
         elif Node.type == "nd_ref":
-            print("get", Node.position)             ##TODO : Position doenst exist!!!
+            print("get", Node.position)             
             return
 
         # Handling assignment (nd_affect)
@@ -56,6 +56,15 @@ class CodeGenerator:
             self.genCode(Node.children[1])  
             print("dup")  
             print("set", Node.children[0].position)  ##TODO : Position doenst exist!!!
+            return
+        
+        # Handling function definition (nd_function)
+        elif Node.type == "nd_function":
+            print(".", Node.value)
+            print("resn", Node.nvar)
+            self.genCode(Node.children[0])
+            print("push 0")
+            print("ret")
             return
         
         else:
