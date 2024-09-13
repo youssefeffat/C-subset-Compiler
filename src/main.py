@@ -44,6 +44,22 @@ int x;
 x = funcCall(1);
 debug x;
 
+	int x;
+	int y;
+	x = 1+1;
+	y = 1+2;
+	debug x;
+	debug y;
+	if (x>y){
+		if (x){
+			debug 200;
+		}else{
+			debug 100;
+		}
+	}
+	else{
+		debug 000;
+	}
 }
 	
 """
@@ -69,7 +85,9 @@ def main():
 	tokens = lexer.work()
 	#Syntax Analysis
 	parser = Parser(tokens)
+	it = 0 
 	while parser.tokens[parser.currentPosition].value!="EOF":
+		it+=1
 		N = parser.AnaSynt()
 		# print("N : ",N)
 		semantic.AnaSem(N) 
@@ -78,6 +96,7 @@ def main():
 		assemblyGen.genCode(N)
 		print("drop",semantic.nvar)
 	print("halt")#dbg\n
+	print("it : ",it)
 	
 
 
