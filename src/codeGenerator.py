@@ -65,13 +65,30 @@ class CodeGenerator:
             self.genCode(Node.children[0])
             print(f"jumpf l1 {self.ifLabel}")
             self.genCode(Node.children[1])
-            if len(Node.children)>2:
+            if len(Node.children)>2: #if no else or while statement
                 print("jump l2")
                 print(f".l1 {self.ifLabel}")
                 self.genCode(Node.children[2])
                 print(f".l2 {self.ifLabel}")
             return
-
+        # Handling while statement (nd_loop) with unique label jumpf l1 label, jump l2 label, .l1, .l2
+        elif Node.type=="nd_loop":
+            self.ifLabel += 1
+            print(f".l1_{self.ifLabel}")
+            self.genCode(Node.children[0])
+            print(f"jumpf l2_{self.ifLabel}")
+            self.genCode(Node.children[1])
+            print(f"jump l1_{self.ifLabel}")
+            print(f".l2_{self.ifLabel}")
+            return
+        # Handling break statement (nd_break)
+        elif Node.type=="nd_break":
+            print(f"jump l2 {self.ifLabel}")
+            return
+        # Handling continue statement (nd_ancre)
+        elif Node.type=="nd_ancre":
+            print(f"jump l1 {self.ifLabel}")
+            return
         else:
             print("NODE TYPE UNKNOWN -> no assembly transformation ",Node.type)
 
