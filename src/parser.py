@@ -33,7 +33,6 @@ class Parser:
             self.acceptValue([")"])
             return A
 
-        ##TODO : fix the issue when "debug x;" the node representing x is not of type nd_decl 
         elif self.checkType(['IDENTIFIER']):
             A = Node("nd_ref",self.tokens[self.currentPosition-1].value)
             return A        
@@ -42,7 +41,7 @@ class Parser:
         #     return None
         
         else:
-            raise SyntaxError(f"Atomic token expected. I got {self.tokens[self.currentPosition]}")
+            raise SyntaxError(f"Atomic token expected. I got {self.tokens[self.currentPosition]}, ")
 
     def s(self)->Node:
         """
@@ -60,7 +59,7 @@ class Parser:
                     S.addChild(self.e(0))
             return S
         else:
-            return self.a()
+            return A
 
 
     def p(self)->Node:
@@ -116,8 +115,8 @@ class Parser:
         return A1
     
 
-    ## TODO there is an issue with choosing  between the types of the token and the node
-    ## TODO : 'int' 'IDENTIFIER' '=' 'E' ';' is not handeled
+    ## DONE : 'int' 'IDENTIFIER' '=' 'E' ';' is not handeled
+    # *not requested 
     def i(self)->Node:
         """
         """
@@ -130,16 +129,20 @@ class Parser:
             self.acceptValue([";"])
 
         #type: ignore # the case of an : '{'  I* '}'
-        elif (self.checkValue(['{'])):      
-            I = Node("nd_block", None)                          #TODO Node Value is None ?????
+        elif (self.checkValue(['{'])):     
+            I = Node("nd_block", None)                          
             while(not self.checkValue(['}'])):
                 I.addChild(self.i())
 
         # the case of an : 'int' IDENTIFIER ';'
         elif self.checkValue(["int"]):
             self.acceptType(["IDENTIFIER"])
-            I = Node("nd_decl",self.tokens[self.currentPosition-1].value)
-            self.acceptValue([";"])
+            if self.checkValue(["("]):
+                self.currentPosition -= 3
+                I = self.f()
+            else:
+                I = Node("nd_decl",self.tokens[self.currentPosition-1].value)
+                self.acceptValue([";"])
             return I
         # the case of an : if '(' E ')' I (else I)?
         elif self.checkValue(["if"]):
@@ -166,37 +169,58 @@ class Parser:
             L.addChild(Node("nd_ancre", None))
             L.addChild(C)
             return L
+        elif self.checkValue(["return"]):
+            I = Node("nd_return", None)                          
+            I.addChild(self.e(0))
+            self.acceptValue([";"])
+            return I
 
         # the case of an : E ';'
         else:
-            I = Node("nd_drop", None)                           #TODO Node Value is None ?????
+            I = Node("nd_drop", None)                           
             I.addChild(self.e(0))
             self.acceptValue([";"])
         return I
 
     def f(self)->Node : 
         """
-        F: "int" IDENTIFIER "(" "int" IDENTIFIER ("," "int" IDENTIFIER )* ")" ";"
-        
+        F: "int" "IDENTIFIER" "(" "int" "IDENTIFIER" ("," "int" "IDENTIFIER" )* ")" 
+        - if 'int' 'Identfier' then not '(' then pos-2 and call i
+        HYPOTHESE :
+        - le code doit commencer par 'int'
+        ISSUES :
+        - les arguments de la fonction sont de type 'int' et int et declarer
+        - cannot use an argument variable directly in the function
+        ANALYSE Semntique:
+        - on verifie que les arguments appeler dans la fonction sont parmis les argumrnts 
+        - les argument doivent etre declarer dans le scope de la function
         """
         if self.checkValue(["int"]):
-            self.checkType(["IDENTIFIER"])
-            I = Node("nd_decl",self.tokens[self.currentPosition-1].value)
+            self.acceptType(["IDENTIFIER"])
             if self.checkValue(["("]):
-                # case where 'int' 'IDENT' '(' ')'';'
-                if self.checkValue([")"]):
-                    I.addChild(Node("nd_function", None))
-                    self.checkValue([';'])
+                I = Node("nd_function", self.tokens[self.currentPosition-2].value)
+                # case where 'int' 'IDENT' '(' ')'
+                if self.checkValue([")"]):    
+                    I.addChild(self.i())
                 # case with multiple arguments
                 else:
+                    self.acceptValue(["int"])
+                    self.acceptType(["IDENTIFIER"])
+                    Narguments = Node("nd_decl", self.tokens[self.currentPosition-1].value)
+                    I.addChild(Narguments)
                     while (not self.checkValue([")"])):
-                        self.acceptType(["IDENTIFIER"])
                         self.acceptValue([","])
+                        self.acceptValue(["int"])
+                        self.acceptType(["IDENTIFIER"])
+                        Narguments = Node("nd_decl", self.tokens[self.currentPosition-1].value)
+                        I.addChild(Narguments)
                     I.addChild(self.i())
+                return I
             else :
-                self.acceptValue([';'])
+                self.currentPosition -= 2
+                I = self.i()
             return I
-        return self.i()
+        raise SyntaxError(f"Expected 'int' but found {self.tokens[self.currentPosition].value}")
 
     def checkType(self,type: list[str])->bool:
         if (self.tokens[self.currentPosition].type not in type):

@@ -4,9 +4,10 @@ class Semantic:
     """
    
     """
-    def __init__(self):
-        self.stack = []  # Stack of dictionaries (scopes)
+    def __init__(self, ):
         self.nvar = 0  # Variable counter
+        self.stack = []  # Symbol table stack
+         # Start the first scope
 
     def AnaSem(self,N:Node)->Node:
         """
@@ -14,11 +15,11 @@ class Semantic:
         """
         # Switch case based on the node type
         if N.type == "nd_affect":
-            # print("passed by nd_affect")
             if N.children[0].type != "nd_ref":
                 raise ReferenceError("Expected reference node on the left-hand side of assignment.")
             for child in N.children:
                 self.AnaSem(child)
+            ##print ("stack : ", self.stack)
             return
 
         elif N.type == "nd_decl":
@@ -26,14 +27,17 @@ class Semantic:
             S.type = "int"  
             S.position = self.nvar
             self.nvar += 1
+            ##print ("stack : ", self.stack)
             return
 
+        #TODO : potential issue with the position of the variable / Node
         elif N.type == "nd_ref":
             # Find the symbol in the current scope
             S = self.find(N.value)
             if S.type != "int":
                 raise KeyError(f"Invalid reference type for {N.value}, expected integer.")
             N.position = S.position
+            ##print ("stack : ", self.stack)
             return
 
 
@@ -45,20 +49,23 @@ class Semantic:
                 self.AnaSem(child)
             # End the current scope
             self.end()
+            ##print ("stack : ", self.stack)
             return
         
-        elif N.type == "nd_function": 
+        #TODO : should we check if the function have a return statement
+        elif N.type == "nd_function":
             S = self.declare(N.value, "function")
             S.type = "function"  
             # Start a new scope
-            self.begin()
+            self.begin() 
             self.nvar = 0
             # Recursively process each child node in the block
             for child in N.children:
                 self.AnaSem(child)
             # End the current scope
             self.end()
-            N.nvar = self.nvar - (N.children.size()-1)
+            N.nvar = self.nvar - (len(N.children)-1)
+            ##print ("stack : ", self.stack)
             return   
        
         elif N.type == "nd_function_call":
@@ -70,14 +77,20 @@ class Semantic:
             for child in N.children:
                 if child != N.children[0]:
                     self.AnaSem(child)
+            ##print ("stack : ", self.stack)
             return
+        
 
         else:
             # Default case: recursively process children
             for child in N.children:
                 self.AnaSem(child)
+            ##print ("stack : ", self.stack)
             return
+        
+        
     
+
     def begin(self) -> None:
         """
         Begin a new scope by pushing an empty dictionary to the stack.
@@ -120,5 +133,5 @@ class Semantic:
         for scope in reversed(self.stack):
             if var in scope:
                 return scope[var]  # Return the found symbol
-
         raise KeyError(f"Variable '{var}' was not declared")
+    

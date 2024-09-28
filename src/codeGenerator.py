@@ -27,7 +27,7 @@ class CodeGenerator:
             self.genCode(Node.children[0])
             print("not")
         
-        elif Node.type=="MOINS_UNAIRE":
+        elif Node.type=="MOINS_UNAIRE":                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
             print("push 0")
             self.genCode(Node.children[0])
             print("sub")
@@ -43,19 +43,20 @@ class CodeGenerator:
             print("drop 1")
 
         # Handling variable declaration (nd_decl)
-        elif Node.type == "nd_decl":
+        elif Node.type == "nd_decl": 
             return
 
         # Handling variable reference (nd_ref)
         elif Node.type == "nd_ref":
-            print("get", Node.position)             
+            print("get", Node.position)
+            print("DEBUGGING NODE : ",Node)             
             return
 
         # Handling assignment (nd_affect)
         elif Node.type == "nd_affect":
             self.genCode(Node.children[1])  
             print("dup")  
-            print("set", Node.children[0].position)  ##TODO : Position doenst exist!!!
+            print("set", Node.children[0].position)  
             return
         
         # Handling function definition (nd_function)
@@ -64,6 +65,21 @@ class CodeGenerator:
             print("resn", Node.nvar)
             self.genCode(Node.children[0])
             print("push 0")
+            print("ret")
+            return
+        
+        #TODO: not sure about the Assembly syntax
+        # Handling function call (nd_function_call)
+        elif Node.type == "nd_function_call":
+            for child in Node.children:
+                self.genCode(child)
+            print("call", Node.children[0].value)
+            return
+        
+        #TODO: Not sure about it !!! 
+        # Handling return statement (nd_return)
+        elif Node.type == "nd_return":
+            self.genCode(Node.children[0])
             print("ret")
             return
         
