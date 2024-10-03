@@ -7,6 +7,7 @@ class CodeGenerator:
 
     def __init__(self):
         self.ifLabel = 0
+        self.loopLabel = 0
 
     def genCode(self,Node:Node)->None:
         """
@@ -61,33 +62,41 @@ class CodeGenerator:
         # Handling if statement (nd_if) with unique label jumpf l1 label, jump l2 label, .l1, .l2
         elif Node.type=="nd_if":
             #print("Node : ",Node)
+            temp = self.ifLabel
             self.ifLabel += 1
             self.genCode(Node.children[0])
-            print(f"jumpf l1 {self.ifLabel}")
+            print(f"jumpf l1_if_{temp}")
             self.genCode(Node.children[1])
+            print(f"jump l2_if_{temp}")
             if len(Node.children)>2: #if no else or while statement
-                print("jump l2")
-                print(f".l1 {self.ifLabel}")
+                print(f".l1_if_{temp}")
                 self.genCode(Node.children[2])
-                print(f".l2 {self.ifLabel}")
+                print(f".l2_if_{temp}")
+            else:
+                print(f".l1_if_{temp}")
+                print(f".l2_if_{temp}")
             return
         # Handling while statement (nd_loop) with unique label jumpf l1 label, jump l2 label, .l1, .l2
+        
         elif Node.type=="nd_loop":
-            self.ifLabel += 1
-            print(f".l1_{self.ifLabel}")
-            self.genCode(Node.children[0])
-            print(f"jumpf l2_{self.ifLabel}")
-            self.genCode(Node.children[1])
-            print(f"jump l1_{self.ifLabel}")
-            print(f".l2_{self.ifLabel}")
+            l = self.ifLabel + 1
+            temp = self.loopLabel
+            self.loopLabel = l
+            print(f".l1_loop_{l}")
+            for child in Node.children:
+                self.genCode(child)
+            print(f"jump l1_loop_{l}")
+            print(f".l2_{l}")
+            self.loopLabel = l
             return
+
         # Handling break statement (nd_break)
         elif Node.type=="nd_break":
-            print(f"jump l2 {self.ifLabel}")
+            print(f"jump l2_{self.ifLabel}")
             return
         # Handling continue statement (nd_ancre)
         elif Node.type=="nd_ancre":
-            print(f"jump l1 {self.ifLabel}")
+            print(f".l3_{self.ifLabel}")
             return
         else:
             print("NODE TYPE UNKNOWN -> no assembly transformation ",Node.type)

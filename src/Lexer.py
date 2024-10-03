@@ -21,7 +21,7 @@ class Lexer:
         self.code = code
         self.current_position = 0
         self.current_line = 1  # Track the current line number
-        self.keywords = {"int", "return", "if", "else", "while", "for", "void", "char", "float", "double", "continue", "break", "send", "recv", "debug"}  # C keywords
+        self.keywords = {"int", "return", "if", "else", "while", "for", "void", "char", "float", "double", "continue", "break", "send", "recv", "debug", "do"}  # C keywords
         self.tokens = []
     
     def work(self):

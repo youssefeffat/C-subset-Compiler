@@ -121,11 +121,14 @@ class Parser:
         """
         """
         # # the case of an :'debug' E ';
-        if (self.tokens[self.currentPosition].value == 'debug'):	
+        if (self.checkValue(["debug"])):	
             I =  Node("nd_debug",self.tokens[self.currentPosition].value)
-            self.currentPosition += 1
             E = self.e(0)
             I.addChild(E)
+            self.acceptValue([";"])
+
+        elif (self.checkValue(["break"])):    
+            I = Node("nd_break", None)
             self.acceptValue([";"])
 
         #type: ignore # the case of an : '{'  I* '}'
@@ -142,7 +145,7 @@ class Parser:
             return I
         # the case of an : if '(' E ')' I (else I)?
         elif self.checkValue(["if"]):
-            I = Node("nd_if", None)                             #TODO Node Value is None ?????
+            I = Node("nd_if", None)
             self.acceptValue(["("])
             I.addChild(self.e(0))
             self.acceptValue([")"])
@@ -153,7 +156,7 @@ class Parser:
         
         # the case of an : while '(' E ')' I
         elif self.checkValue(["while"]):
-            C = Node("nd_if", None)                          #TODO Node Value is None ?????
+            C = Node("nd_if", None)
             self.acceptValue(["("])
             E = self.e(0)
             self.acceptValue([")"])
@@ -165,6 +168,27 @@ class Parser:
             L.addChild(Node("nd_ancre", None))
             L.addChild(C)
             return L
+        
+        elif self.checkValue(["do"]):
+            C = Node("nd_if", None)
+            I = self.i()
+            self.acceptValue(["while"])
+            self.acceptValue(["("])
+            E = self.e(0)
+            self.acceptValue([")"])
+            self.acceptValue([";"])
+            N = Node("NOT", None)
+            N.addChild(E)
+            C.addChild(N)
+            # C.addChild(I)
+            C.addChild(Node("nd_break", None))
+            L = Node("nd_loop", "do")
+            L.addChild(Node("nd_ancre", None))
+            L.addChild(I)
+            L.addChild(C)
+            return L
+        
+        # the case of an : for '(' I E ';' I ')' I
 
         # the case of an : E ';'
         else:
