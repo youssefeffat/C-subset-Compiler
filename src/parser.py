@@ -46,26 +46,41 @@ class Parser:
     def s(self)->Node:
         """
         S := A ( '(' ( epsilon|E (','E)* ) ')' )?
+          := A ( '[' E ']' )?
         
         """
-        A = self.a()
+        # A = self.a()
+        # if self.checkValue(["("]):
+        #     S = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          #TODO Node Value is correct ????? 
+        #     S.addChild(A)
+        #     if (not self.checkValue([")"])):
+        #         S.addChild(self.e(0))
+        #         while (not self.checkValue([")"])):
+        #             self.acceptValue([","])
+        #             S.addChild(self.e(0))
+        #     return S
+        # else:
+        #     return A
+        R = self.a()
         if self.checkValue(["("]):
-            S = Node("nd_function_call", None)                          #TODO Node Value is None ????? 
-            S.addChild(A)
-            if (not self.checkValue([")"])):
-                S.addChild(self.e(0))
+            C = R
+            R = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          #TODO Node Value is correct ????? 
+            R.addChild(C)
+            if (self.checkValue([")"])):
+             pass
+            else :
+                R.addChild(self.e(0))
                 while (not self.checkValue([")"])):
                     self.acceptValue([","])
-                    S.addChild(self.e(0))
-            return S
-        else:
-            return A
+                    R.addChild(self.e(0))      
+        return R
 
 
     def p(self)->Node:
         """
         operateur unaire
-        P:= +P | -P | !P | S
+        P:= +P | -P | !P | &P | *P | S
+        
         """
         if self.checkValue(["+"]):
             A = Node("PLUS_UNAIRE",self.tokens[self.currentPosition-1].value)
@@ -77,6 +92,14 @@ class Parser:
             return A
         elif self.checkValue(["!"]):
             A = Node("NOT",self.tokens[self.currentPosition-1].value)
+            A.addChild(self.p())
+            return A
+        elif self.checkValue(["&"]):
+            A = Node("nd_adress",self.tokens[self.currentPosition-1].value)
+            A.addChild(self.p())
+            return A
+        elif self.checkValue(["*"]):
+            A = Node("nd_indirection",self.tokens[self.currentPosition-1].value)
             A.addChild(self.p())
             return A
         else:
@@ -134,8 +157,10 @@ class Parser:
             while(not self.checkValue(['}'])):
                 I.addChild(self.i())
 
-        # the case of an : 'int' IDENTIFIER ';'
+        # the case of an : 'int' '*'* IDENTIFIER ';'
         elif self.checkValue(["int"]):
+            while (self.checkValue(["*"])):
+                pass
             self.acceptType(["IDENTIFIER"])
             if self.checkValue(["("]):
                 self.currentPosition -= 3

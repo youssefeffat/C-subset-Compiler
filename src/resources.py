@@ -10,7 +10,7 @@ class Node:
         self.children.append(child)
 
     def __repr__(self) -> str:
-        return f"Node(type={self.type}, value={self.value}, children={self.children})"
+        return f"Node(type={self.type}, value={self.value}, children={self.children}, position={self.position}, nvar={self.nvar})"
     
 class Token:
     def __init__(self, type, line, value):

@@ -5,7 +5,6 @@ from semantic import Semantic
 from codeGenerator import CodeGenerator
 from resources import stack
 
-#stack = stack()
 assemblyGen = CodeGenerator()
 semantic = Semantic()
 
@@ -15,61 +14,77 @@ semantic = Semantic()
 # 	file_content = file.read()
 # stringFile = "(-(!((3+2))))"
 
-# stringFile = """
-# {	
-# 	int x;
-# 	int y;
-# 	x = 1+1;
-# 	y = 1+2;
-# 	debug x;
-# 	debug y;
-# }
-# {
-	
-# 	int x;
-# 	int y;
-# 	x = 1+3;
-# 	y = 1+4;
-# 	debug x;
-# 	debug y;
-# }
-# """
 
 stringFile = """
+int calcul0(){return 1;}
+int calculx(int x){return x;}
+int calculxplus1(int x){ int x; x=x+1; return x;}
+int calculXAddY(int x, int y){int res; res=x+y; return res;}
+int GRondF(int x){ int f; f = calculx(x)+1; return f;} 
 
 int main(){
-
-	int calcul0(){return 0;}
-
-	int a;
+	int *a;
 	a = calcul0();
 
 	int x;
-	x = 1;
+ 	x = calculx(a);
+
+	int x1;
+	x1 = calculxplus1(x);
 
 	int y;
-	y = 2;
-	y = x + y;
+	y = 1;
+	//y = calculXAddY(x1,y);
 
-	int z;
-	z = 3;
+	int f;
+	f = GRondF(calculx(y));
 
 	debug a;
-	debug x;
+    debug x;
+	debug x1;
 	debug y;
-	debug z;
+	debug f;
 
 	return 0;
 }
-
-
 """
+# stringFile = """
+
+# int main(){
+
+# 	int calcul0(){return 0;}
+# 	int calculX(int x){return x;}
+# 	int calculXAddY(int x, int y){int res; res=x+y; return res;}
+
+# 	int a;
+# 	a = calcul0();
+
+# 	int x;
+# 	x = calculX(1);
+
+# 	int y;
+# 	y = 2;
+# 	y = calculXAddY(x,y);
+
+# 	debug a;
+# 	debug x;
+# 	debug y;
+
+# 	return 0;
+# }
+
+
+# """
 
 def main():
 	"""
 	"""
 	semantic.begin()
+
 	print(".start")
+	print("prep main")
+	print("call 0")
+	print("halt")
 	#Lexical Analysis
 	lexer = Lexer(stringFile)
 	tokens = lexer.work()
@@ -80,9 +95,12 @@ def main():
 		it+=1
 		N = parser.AnaSynt()
 		semantic.AnaSem(N) 
+		# print ("Node in the MAIN : ", N)
 		#N = Optimizer.Optim(N)
+		print("resn", semantic.nvar)
 		assemblyGen.genCode(N)
-		print ("N : ",N)
+		print("drop", semantic.nvar)	
+		
 	semantic.end()
 	# print("halt")#dbg\n
 	
