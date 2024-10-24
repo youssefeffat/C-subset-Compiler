@@ -60,7 +60,7 @@ int test_binary_operators() {
     return 0;
 }
 
-// TESTED
+
 // c. Expressions
 int test_expressions() {
 
