@@ -46,12 +46,10 @@ class Parser:
     def s(self)->Node:
         """
         S := A ( '(' ( epsilon|E (','E)* ) ')' )?
-          := A ( '[' E ']' )?
-        
         """
-        # A = self.a()
+        A = self.a()
         # if self.checkValue(["("]):
-        #     S = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          #TODO Node Value is correct ????? 
+        #     S = Node("nd_call", None)                          #TODO Node Value is None ????? 
         #     S.addChild(A)
         #     if (not self.checkValue([")"])):
         #         S.addChild(self.e(0))
@@ -60,20 +58,8 @@ class Parser:
         #             S.addChild(self.e(0))
         #     return S
         # else:
-        #     return A
-        R = self.a()
-        if self.checkValue(["("]):
-            C = R
-            R = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          #TODO Node Value is correct ????? 
-            R.addChild(C)
-            if (self.checkValue([")"])):
-             pass
-            else :
-                R.addChild(self.e(0))
-                while (not self.checkValue([")"])):
-                    self.acceptValue([","])
-                    R.addChild(self.e(0))      
-        return R
+        #     return self.a()
+        return A
 
 
     def p(self)->Node:
@@ -121,7 +107,7 @@ class Parser:
         A1 = self.p()
         while (self.tokens[self.currentPosition].type!="EOF" ):
             signDict = operationsPriority.get(self.tokens[self.currentPosition].value) # type: ignore # priority dict of the current token
-            priority = None if signDict is None else signDict.get("priority") #TODO:DONE Change with Data.operationsPriority 
+            priority = None if signDict is None else signDict.get("priority")
             associativity = None if signDict is None else signDict.get("associativity")
             nd_type = valueToNodeType.get(self.tokens[self.currentPosition].value)
             tk_value = self.tokens[self.currentPosition].value
@@ -144,11 +130,14 @@ class Parser:
         """
         """
         # # the case of an :'debug' E ';
-        if (self.tokens[self.currentPosition].value == 'debug'):	
+        if (self.checkValue(["debug"])):	
             I =  Node("nd_debug",self.tokens[self.currentPosition].value)
-            self.currentPosition += 1
             E = self.e(0)
             I.addChild(E)
+            self.acceptValue([";"])
+
+        elif (self.checkValue(["break"])):    
+            I = Node("nd_break", None)
             self.acceptValue([";"])
 
         #type: ignore # the case of an : '{'  I* '}'
@@ -171,7 +160,7 @@ class Parser:
             return I
         # the case of an : if '(' E ')' I (else I)?
         elif self.checkValue(["if"]):
-            I = Node("nd_if", None)                             #TODO Node Value is None ?????
+            I = Node("nd_if", None)
             self.acceptValue(["("])
             I.addChild(self.e(0))
             self.acceptValue([")"])
@@ -182,7 +171,7 @@ class Parser:
         
         # the case of an : while '(' E ')' I
         elif self.checkValue(["while"]):
-            C = Node("nd_if", None)                          #TODO Node Value is None ?????
+            C = Node("nd_if", None)
             self.acceptValue(["("])
             E = self.e(0)
             self.acceptValue([")"])
@@ -190,16 +179,56 @@ class Parser:
             C.addChild(E)
             C.addChild(I)
             C.addChild(Node("nd_break", None))
-            L = Node("nd_loop", None)
+            L = Node("nd_loop", "while")
             L.addChild(Node("nd_ancre", None))
             L.addChild(C)
             return L
+        
+        elif self.checkValue(["do"]):
+            C = Node("nd_if", None)
+            I = self.i()
+            self.acceptValue(["while"])
+            self.acceptValue(["("])
+            E = self.e(0)
+            self.acceptValue([")"])
+            self.acceptValue([";"])
+            N = Node("NOT", None)
+            N.addChild(E)
+            C.addChild(N)
+            # C.addChild(I)
+            C.addChild(Node("nd_break", None))
+            L = Node("nd_loop", "do")
+            L.addChild(Node("nd_ancre", None))
+            L.addChild(I)
+            L.addChild(C)
+            return L        
+        # the case of an : for '(' E ';' E ';' E ')' I
+        elif self.checkValue(["for"]):
+            S = Node("nd_seq", None)
+            self.acceptValue(["("])
+            E1 = self.e(0)
+            S.addChild(E1)
+            self.acceptValue([";"])
+            E2 = self.e(0)
+            self.acceptValue([";"])
+            E3 = self.e(0)
+            self.acceptValue([")"])
+            L = Node("nd_loop", "for")
+            C = Node("nd_if", None)
+            C.addChild(E2)
+            I = self.i()
+            C.addChild(I)
+            C.addChild(Node("nd_break", None))
+            L.addChild(C)
+            L.addChild(Node("nd_ancre", None))
+            L.addChild(E3)
+            S.addChild(L)
+            return S
         elif self.checkValue(["return"]):
             I = Node("nd_return", None)                          
             I.addChild(self.e(0))
             self.acceptValue([";"])
             return I
-
         # the case of an : E ';'
         else:
             I = Node("nd_drop", None)                           
@@ -247,6 +276,7 @@ class Parser:
             return I
         raise SyntaxError(f"Expected 'int' but found {self.tokens[self.currentPosition].value}")
 
+        
     def checkType(self,type: list[str])->bool:
         if (self.tokens[self.currentPosition].type not in type):
             return False
@@ -271,7 +301,7 @@ class Parser:
     ## TODO : add the line number to the error message
     def acceptValue(self, value:list[str]) -> bool:
         if self.tokens[self.currentPosition].value not in value:
-            raise SyntaxError(f"Expected {value} but found {self.tokens[self.currentPosition].value}")        
+            raise SyntaxError(f"Expected {value} but found {self.tokens[self.currentPosition].value} at line {self.tokens[self.currentPosition].line}")        
         else:
             self.currentPosition += 1
             return True

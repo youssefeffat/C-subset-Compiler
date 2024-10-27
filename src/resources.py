@@ -80,7 +80,16 @@ class Data:
             "nd_MOD": "mod",
             "nd_MUL" : "mul",
             "nd_debug": "dbg",
-
+            # Dépile deux valeurs du sommet de la pile et empile le résultat de la
+            # comparaison des deux :
+            "nd_EQ": "cmpeq",
+            "nd_NEQ": "cmpne",
+            "nd_GT": "cmpgt",
+            "nd_LT": "cmplt",
+            "nd_GTE": "cmpge",
+            "nd_LTE": "cmple",
+            "nd_AND": "and",
+            "nd_OR": "or",
         }
         self.symbolsToNodeType = {
             "(": "nd_OPEN_PARENTHESIS",
@@ -89,7 +98,6 @@ class Data:
             "}": "nd_CLOSE_BRACE",
             ";": "nd_SEMICOLON",
             ",": "nd_COMMA",
-            
         }
 
 class stack : 
