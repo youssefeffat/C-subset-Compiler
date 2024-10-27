@@ -1,91 +1,43 @@
 from Lexer import Lexer
-#from optimizer import optimizer
+# from optimizer import optimizer
 from parser import Parser
 from semantic import Semantic
 from codeGenerator import CodeGenerator
-
+from resources import stack
 
 assemblyGen = CodeGenerator()
 semantic = Semantic()
 
-# file_path = "test.c"
-# with open(file_path, 'r') as file:
-# 	file_content = file.read()
-# stringFile = "(-(!((3+2))))"
-stringFile = """
-{
-	// int a = 4; // this doesnt work
-	int i;
-	for (i=0;i<10;i=i+1){
-		debug i;
-	}
-
-
-	int x;
-	int y;
-	x = 11;
-	y = 22;
-	//if (0){
-	//	debug x;
-	//	if (0){
-	//		debug 200;
-	//	}else{
-	//		debug 100;
-	//	}
-	//}
-	//else{
-	//	debug y;
-	//}
-
-	// test while
-	//while(1){
-	//	debug 300;
-	//	while(1){
-	//		debug 400;
-	//		break;
-	//	}
-	//	debug 500;
-	//	break;
-	//}
-	//do{
-	//	debug 333;
-	//	break;
-	//}while(0);
-
-	
-}
-	
-"""
+file_path = './CFilesTests/test.c'
+with open(file_path, 'r') as file:
+	file_content = file.read()
 
 def main():
 	"""
-	//compilateur
-	print(".start")
-	for (int i=1;i<argc;i++){
-		analex(argv[i]);
-		while(T.type!="EOF"){
-			Node N = AnaSynt();
-			AnaSem(N);
-			N = Optim(N);
-			genCode(N);
-		}
-	}
-	print("dbg\nhalt")
 	"""
+	semantic.begin()
+
 	print(".start")
+	print("prep main")
+	print("call 0")
+	print("halt")
 	#Lexical Analysis
-	lexer = Lexer(stringFile)
+	lexer = Lexer(file_content)
 	tokens = lexer.work()
 	#Syntax Analysis
 	parser = Parser(tokens)
+	# it = 0 
 	while parser.tokens[parser.currentPosition].value!="EOF":
+		# it+=1
 		N = parser.AnaSynt()
 		semantic.AnaSem(N) 
 		#N = Optimizer.Optim(N)
-		print("resn",semantic.nvar)
+		print("resn", semantic.nvar)
 		assemblyGen.genCode(N)
-		print("drop",semantic.nvar)
-	print("halt")#dbg\n
+		print("drop", semantic.nvar)	
+
+	semantic.end()
+	# print("halt")#dbg\n
 	
 
 
@@ -93,3 +45,36 @@ if __name__ == "__main__":
     main()
 
     
+# file_content = """
+# int calcul0(){return 1;}
+# int calculx(int x){return x;}
+# int calculxplus1(int x){ int x; x=x+1; return x;}
+# int calculXAddY(int x, int y){int res; res=x+y; return res;}
+# int GRondF(int x){ int f; f = calculx(x)+1; return f;} 
+
+# int main(){
+# 	int *a;
+# 	a = calcul0();
+
+# 	int x;
+#  	x = calculx(a);
+
+# 	int x1;
+# 	x1 = calculxplus1(x);
+
+# 	int y;
+# 	y = 1;
+# 	//y = calculXAddY(x1,y);
+
+# 	int f;
+# 	f = GRondF(calculx(y));
+
+# 	debug a;
+#     debug x;
+# 	debug x1;
+# 	debug y;
+# 	debug f;
+
+# 	return 0;
+# }
+# """
