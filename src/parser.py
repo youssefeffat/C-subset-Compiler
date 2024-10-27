@@ -98,7 +98,7 @@ class Parser:
         A1 = self.p()
         while (self.tokens[self.currentPosition].type!="EOF" ):
             signDict = operationsPriority.get(self.tokens[self.currentPosition].value) # type: ignore # priority dict of the current token
-            priority = None if signDict is None else signDict.get("priority") #TODO:DONE Change with Data.operationsPriority 
+            priority = None if signDict is None else signDict.get("priority")
             associativity = None if signDict is None else signDict.get("associativity")
             nd_type = valueToNodeType.get(self.tokens[self.currentPosition].value)
             tk_value = self.tokens[self.currentPosition].value
@@ -188,11 +188,32 @@ class Parser:
             L.addChild(C)
             return L
         
-        # the case of an : for '(' I E ';' I ')' I
+        # the case of an : for '(' E ';' E ';' E ')' I
+        elif self.checkValue(["for"]):
+            S = Node("nd_seq", None)
+            self.acceptValue(["("])
+            E1 = self.e(0)
+            S.addChild(E1)
+            self.acceptValue([";"])
+            E2 = self.e(0)
+            self.acceptValue([";"])
+            E3 = self.e(0)
+            self.acceptValue([")"])
+            L = Node("nd_loop", "for")
+            C = Node("nd_if", None)
+            C.addChild(E2)
+            I = self.i()
+            C.addChild(I)
+            C.addChild(Node("nd_break", None))
+            L.addChild(C)
+            L.addChild(Node("nd_ancre", None))
+            L.addChild(E3)
+            S.addChild(L)
+            return S
 
         # the case of an : E ';'
         else:
-            I = Node("nd_drop", None)                           #TODO Node Value is None ?????
+            I = Node("nd_drop", None)
             I.addChild(self.e(0))
             self.acceptValue([";"])
         return I
@@ -240,7 +261,7 @@ class Parser:
     ## TODO : add the line number to the error message
     def acceptValue(self, value:list[str]) -> bool:
         if self.tokens[self.currentPosition].value not in value:
-            raise SyntaxError(f"Expected {value} but found {self.tokens[self.currentPosition].value}")        
+            raise SyntaxError(f"Expected {value} but found {self.tokens[self.currentPosition].value} at line {self.tokens[self.currentPosition].line}")        
         else:
             self.currentPosition += 1
             return True

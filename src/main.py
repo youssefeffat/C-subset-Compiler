@@ -14,6 +14,13 @@ semantic = Semantic()
 # stringFile = "(-(!((3+2))))"
 stringFile = """
 {
+	// int a = 4; // this doesnt work
+	int i;
+	for (i=0;i<10;i=i+1){
+		debug i;
+	}
+
+
 	int x;
 	int y;
 	x = 11;
@@ -33,11 +40,19 @@ stringFile = """
 	// test while
 	//while(1){
 	//	debug 300;
+	//	while(1){
+	//		debug 400;
+	//		break;
+	//	}
+	//	debug 500;
 	//	break;
 	//}
-	do{
-		debug 333;
-	}while(1);
+	//do{
+	//	debug 333;
+	//	break;
+	//}while(0);
+
+	
 }
 	
 """
@@ -65,7 +80,6 @@ def main():
 	parser = Parser(tokens)
 	while parser.tokens[parser.currentPosition].value!="EOF":
 		N = parser.AnaSynt()
-		# print("N : ",N)
 		semantic.AnaSem(N) 
 		#N = Optimizer.Optim(N)
 		print("resn",semantic.nvar)

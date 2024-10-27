@@ -8,6 +8,9 @@ class CodeGenerator:
     def __init__(self):
         self.ifLabel = 0
         self.loopLabel = 0
+        # debug variable
+        self.lastLoop = None
+        self.numberOfLoops = 0
 
     def genCode(self,Node:Node)->None:
         """
@@ -79,24 +82,32 @@ class CodeGenerator:
         # Handling while statement (nd_loop) with unique label jumpf l1 label, jump l2 label, .l1, .l2
         
         elif Node.type=="nd_loop":
+            self.lastLoop = Node.value
+            self.numberOfLoops += 1
             l = self.ifLabel + 1
             temp = self.loopLabel
             self.loopLabel = l
-            print(f".l1_loop_{l}")
+            print(f".l1_loop_{l} ;nd_loop{self.lastLoop,self.numberOfLoops}")
             for child in Node.children:
                 self.genCode(child)
             print(f"jump l1_loop_{l}")
-            print(f".l2_{l}")
-            self.loopLabel = l
+            print(f".l2_{l} ;nd_loop{self.lastLoop,self.numberOfLoops}")
+            self.loopLabel = temp
+            return
+        
+        # Handling for statements (nd_seq)
+        elif Node.type=="nd_seq":
+            for child in Node.children:
+                self.genCode(child)
             return
 
         # Handling break statement (nd_break)
         elif Node.type=="nd_break":
-            print(f"jump l2_{self.ifLabel}")
+            print(f"jump l2_{self.loopLabel} ;nd_break{self.lastLoop,self.numberOfLoops}")
             return
         # Handling continue statement (nd_ancre)
         elif Node.type=="nd_ancre":
-            print(f".l3_{self.ifLabel}")
+            print(f".l3_{self.loopLabel} ;nd_ancre")
             return
         else:
             print("NODE TYPE UNKNOWN -> no assembly transformation ",Node.type)
