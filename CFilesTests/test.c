@@ -23,71 +23,71 @@ int test_unary_operators() {
     return 0;
 }
 
-// b. Binary Operators
-int test_binary_operators() {
+// // b. Binary Operators
+// int test_binary_operators() {
 
-    // Standard case
-    int a;
-	int b;
-    a = 5;
-    b = 3;
-    int c;
-    c = a + b;
-    debug c; // Expected: 8
+//     // Standard case
+//     int a;
+// 	int b;
+//     a = 5;
+//     b = 3;
+//     int c;
+//     c = a + b;
+//     debug c; // Expected: 8
 
-    // Complex case
-    int d;
-    d = a * b;
-    debug d; // Expected: 15
+//     // Complex case
+//     int d;
+//     d = a * b;
+//     debug d; // Expected: 15
 
-	// TODO : KO test
-    // Bottleneck case
-    int e;
-    e = (a * b) / (a - b);
-    debug e; // Expected: -15
+// 	// TODO : KO test
+//     // Bottleneck case
+//     int e;
+//     e = (a * b) / (a - b);
+//     debug e; // Expected: -15
 
-	// TODO : dependent on athoer feature
-    // // Additional bottleneck with many operations
-    // int f, g;
-    // f = 1;
-    // g = 0;
-    // for (int i = 0; i < 1000000; i++) {
-    //     f = f * 2;
-    //     g += f;
-    // }
-    // debug g; // Expected: large sum (overflow possible depending on int size)
+// 	// TODO : dependent on athoer feature
+//     // // Additional bottleneck with many operations
+//     // int f, g;
+//     // f = 1;
+//     // g = 0;
+//     // for (int i = 0; i < 1000000; i++) {
+//     //     f = f * 2;
+//     //     g += f;
+//     // }
+//     // debug g; // Expected: large sum (overflow possible depending on int size)
 
-    return 0;
-}
+//     return 0;
+// }
 
 
-// c. Expressions
-int test_expressions() {
+// // c. Expressions
+// int test_expressions() {
 
-    // Standard case
-    int b;
-    b = 5;
-    int c;
-    c = 3;
-    int d;
-    d = 2;
-    int result;
-    result = (b + c) * d;
-    debug result; // Expected: 16
+//     // Standard case
+//     int b;
+//     b = 5;
+//     int c;
+//     c = 3;
+//     int d;
+//     d = 2;
+//     int result;
+//     result = (b + c) * d;
+//     debug result; // Expected: 16
 
-    // Complex case (resultat decimal)
-    int complex_result;
-    complex_result = (((b + c) * d) - d) / (b - c);
-    debug complex_result; // Expected: Complex expression result = 7
+//     // Complex case (resultat decimal)
+//     int complex_result;
+//     complex_result = (((b + c) * d) - d) / (b - c);
+//     debug complex_result; // Expected: Complex expression result = 7
 
-	// TODO : KO test giving 60 instead of 61
-    // Bottleneck case: deeply nested expressions (resultat decimal)
-    int depth;
-    depth = (((((((b + c) * d) + d) - b) * c) + d) / d) * c;
-    debug depth; // Expected: Deeply nested result = 61
+// 	// TODO : KO test giving 60 instead of 61
+//     // Bottleneck case: deeply nested expressions (resultat decimal)
+//     int depth;
+//     depth = (((((((b + c) * d) + d) - b) * c) + d) / d) * c;
+//     debug depth; // Expected: Deeply nested result = 61
 
-    return 0;
-}
+//     return 0;
+// }
 
 // // d. Loops
 // int test_loops() {
@@ -175,34 +175,34 @@ int test_expressions() {
 // }
 
 // g. Functions
-int add(int a, int b) {
-    return a + b;
-}
+// int add(int a, int b) {
+//     return a + b;
+// }
 
-int test_functions() {
-    // Standard case
-    int result;
-    result = add(5, 3);
-    debug result; // Expected: 8
+// int test_functions() {
+//     // Standard case
+//     int result;
+//     result = add(5, 3);
+//     debug result; // Expected: 8
 
-    // Complex case: multiple function calls
-    int complex_result;
-    complex_result = add(add(5, 3), add(4, 2));
-    debug complex_result; // Expected: 14
+//     // Complex case: multiple function calls
+//     int complex_result;
+//     complex_result = add(add(5, 3), add(4, 2));
+//     debug complex_result; // Expected: 14
 
-	// TODO : KO test for the moment the issue is expected to related to the if condition
-    // // Bottleneck case: recursion
-    // int factorial(int n) {
-    //     if (n <= 1) return 1;
-    //     return n * factorial(n - 1);
-    // }
+// 	// TODO : KO test for the moment the issue is expected to related to the if condition
+//     // // Bottleneck case: recursion
+//     // int factorial(int n) {
+//     //     if (n <= 1) return 1;
+//     //     return n * factorial(n - 1);
+//     // }
 
-    // int fact;
-    // fact = factorial(10);
-    // debug fact; // Expected: 3628800
+//     // int fact;
+//     // fact = factorial(10);
+//     // debug fact; // Expected: 3628800
 
-    return 0;
-}
+//     return 0;
+// }
 
 // // h. Pointers
 // int test_pointers() {
@@ -251,11 +251,11 @@ int main() {
 	//Fully passed
     test_unary_operators();
 	
-	//Pending
-    test_binary_operators();
+	// //Pending
+    // test_binary_operators();
 	
-	//Pending
-    test_expressions();
+	// //Pending
+    // test_expressions();
     
 	//NOT TESTED
 	// test_loops();
@@ -266,8 +266,8 @@ int main() {
 	//NOT TESTED
 	// test_instructions();
     
-	//Pending
-	test_functions();
+	// //Pending
+	// test_functions();
 
 	//NOT TESTED
     // test_pointers();

@@ -46,10 +46,12 @@ class Parser:
     def s(self)->Node:
         """
         S := A ( '(' ( epsilon|E (','E)* ) ')' )?
+          := A ( '[' E ']' )?
+        
         """
-        A = self.a()
+        # A = self.a()
         # if self.checkValue(["("]):
-        #     S = Node("nd_call", None)                          #TODO Node Value is None ????? 
+        #     S = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          #TODO Node Value is correct ????? 
         #     S.addChild(A)
         #     if (not self.checkValue([")"])):
         #         S.addChild(self.e(0))
@@ -58,8 +60,21 @@ class Parser:
         #             S.addChild(self.e(0))
         #     return S
         # else:
-        #     return self.a()
-        return A
+        #     return A
+        R = self.a()
+        if self.checkValue(["("]):
+            C = R
+            R = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          #TODO Node Value is correct ????? 
+            R.addChild(C)
+            if (self.checkValue([")"])):
+             pass
+            else :
+                R.addChild(self.e(0))
+                while (not self.checkValue([")"])):
+                    self.acceptValue([","])
+                    R.addChild(self.e(0))      
+        return R
+
 
 
     def p(self)->Node:
