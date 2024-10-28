@@ -155,6 +155,10 @@ class CodeGenerator:
         elif Node.type=="nd_break":
             print(f"jump l2_{self.loopLabel} ;nd_break{self.lastLoop,self.numberOfLoops}")
             return
+        # Handling continue statement (nd_continue)
+        elif Node.type=="nd_continue":
+            print(f"jump l3_{self.loopLabel} ;nd_continue{self.lastLoop,self.numberOfLoops}")
+            return
         # Handling continue statement (nd_ancre)
         elif Node.type=="nd_ancre":
             print(f".l3_{self.loopLabel} ;nd_ancre")

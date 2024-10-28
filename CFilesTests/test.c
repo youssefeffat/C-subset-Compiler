@@ -51,7 +51,7 @@ int test_unary_operators() {
 //     // int f, g;
 //     // f = 1;
 //     // g = 0;
-//     // for (int i = 0; i < 1000000; i++) {
+//     // for (int i = 0; i < 1000000; i=i+1) {
 //     //     f = f * 2;
 //     //     g += f;
 //     // }
@@ -93,15 +93,15 @@ int test_unary_operators() {
 // int test_loops() {
 //     // Standard case
 //     int i;
-//     for (i = 0; i < 3; i++) {
+//     for (i = 0; i < 3; i=i+1) {
 //         debug i; // Expected: 0, 1, 2
 //     }
 
 //     // Complex case: Nested loops
 //     int j, sum;
 //     sum = 0;
-//     for (i = 0; i < 10; i++) {
-//         for (j = 0; j < 10; j++) {
+//     for (i = 0; i < 10; i=i+1) {
+//         for (j = 0; j < 10; j=j+1) {
 //             sum += i * j;
 //         }
 //     }
@@ -110,13 +110,81 @@ int test_unary_operators() {
 //     // Bottleneck case: large iteration loop
 //     int large_sum;
 //     large_sum = 0;
-//     for (i = 0; i < 1000000; i++) {
+//     for (i = 0; i < 1000000; i=i+1) {
 //         large_sum += i;
 //     }
 //     debug large_sum; // Expected: 499999500000
 
 //     return 0;
 // }
+
+// d prime. Loops (for while do-while) break and continue
+
+int test_loops2(){
+    // Standard case
+    int i;
+    for (i = 0; i < 3; i=i+1) {
+        debug i; // Expected: 0, 1, 2
+    }
+
+    // Complex case: Nested loops
+    int j;
+    int sum;
+    sum = 0;
+    for (i = 0; i < 10; i=i+1) {
+        for (j = 0; j < 10; j=j+1) {
+            sum = sum + i * j;
+        }
+    }
+    debug sum; // Expected: Sum of 10x10 matrix of i*j = 2025
+
+    // Bottleneck case: large iteration loop
+    int large_sum;
+    large_sum = 0;
+    for (i = 0; i < 1000; i=i+1) {
+        large_sum = large_sum + i;
+    }
+    debug large_sum; // Expected: 499999500
+
+    // break
+    int k;
+    for (k = 0; k < 10; k=k+1) {
+        if (k == 5) {
+            break;
+        }
+        debug k; // Expected: 0, 1, 2, 3, 4
+    }
+
+    // continue
+    int l;
+    for (l = 0; l < 10; l=l+1) {
+        if (l == 5) {
+            continue;
+        }
+        debug l; // Expected: 0, 1, 2, 3, 4, 6, 7, 8, 9
+    }
+
+    // while
+    int m;
+    m = 0;
+    debug 619;
+    while (m < 10) {
+        debug m; // Expected: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+        m=m+1;
+    }
+
+    // do-while
+    int n;
+    n = 0;
+    debug 66191;
+    do {
+        debug n; // Expected: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+        n=n+1;
+    } while (n < 10);
+
+    return 0;
+}
+
 
 // // e. Variables
 // int test_variables() {
@@ -135,8 +203,8 @@ int test_unary_operators() {
 //     // // Bottleneck case: 2D array
 //     // int matrix[100][100];
 //     // int sum = 0;
-//     // for (int i = 0; i < 100; i++) {
-//     //     for (int j = 0; j < 100; j++) {
+//     // for (int i = 0; i < 100; i=i+1) {
+//     //     for (int j = 0; j < 100; j=j+1) {
 //     //         matrix[i][j] = i * j;
 //     //         sum += matrix[i][j];
 //     //     }
@@ -164,7 +232,7 @@ int test_unary_operators() {
 //     // // Complex case
 //     // int large_conditional;
 //     // large_conditional = 0;
-//     // for (int i = 0; i < 10000; i++) {
+//     // for (int i = 0; i < 10000; i=i+1) {
 //     //     if (i % 2 == 0) {
 //     //         large_conditional += i;
 //     //     }
@@ -220,7 +288,7 @@ int test_unary_operators() {
 //     // Bottleneck case: pointer arithmetic in loop
 //     int sum;
 //     sum = 0;
-//     for (int i = 0; i < 10; i++) {
+//     for (int i = 0; i < 10; i=i+1) {
 //         sum += *(ptr + i);
 //     }
 //     debug sum; // Expected: 45
@@ -238,7 +306,7 @@ int test_unary_operators() {
 //     // Bottleneck: large simulated library usage
 //     int lib_bottleneck;
 //     lib_bottleneck = 0;
-//     for (int i = 0; i < 100000; i++) {
+//     for (int i = 0; i < 100000; i=i+1) {
 //         lib_bottleneck += 1;
 //     }
 //     debug lib_bottleneck; // Expected: 100000
@@ -250,6 +318,8 @@ int main() {
     
 	//Fully passed
     test_unary_operators();
+    debug 7009;
+    test_loops2();
 	
 	// //Pending
     // test_binary_operators();

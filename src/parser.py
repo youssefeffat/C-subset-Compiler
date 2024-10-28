@@ -155,6 +155,10 @@ class Parser:
             I = Node("nd_break", None)
             self.acceptValue([";"])
 
+        elif (self.checkValue(["continue"])):    
+            I = Node("nd_continue", None)
+            self.acceptValue([";"])
+
         #type: ignore # the case of an : '{'  I* '}'
         elif (self.checkValue(['{'])):     
             I = Node("nd_block", None)                          

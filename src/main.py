@@ -4,11 +4,18 @@ from parser import Parser
 from semantic import Semantic
 from codeGenerator import CodeGenerator
 from resources import stack
+import sys
 
 assemblyGen = CodeGenerator()
 semantic = Semantic()
 
-file_path = './CFilesTests/test.c'
+# get file path from command line
+# check if file path is provided
+if len(sys.argv) < 2:
+	file_path = './CFilesTests/test.c'
+else:
+	file_path = str(sys.argv[1])
+
 with open(file_path, 'r') as file:
 	file_content = file.read()
 
