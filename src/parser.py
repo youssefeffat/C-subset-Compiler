@@ -96,7 +96,7 @@ class Parser:
             A.addChild(self.p())
             return A
         elif self.checkValue(["&"]):
-            A = Node("nd_adress",self.tokens[self.currentPosition-1].value)
+            A = Node("nd_address",self.tokens[self.currentPosition-1].value)
             A.addChild(self.p())
             return A
         elif self.checkValue(["*"]):
@@ -145,20 +145,20 @@ class Parser:
         """
         """
         # # the case of an :'debug' E ';
-        if (self.checkValue(["debug"])):	
+        if (self.tokens[self.currentPosition].value == 'debug'):	
             I =  Node("nd_debug",self.tokens[self.currentPosition].value)
+            self.currentPosition += 1
             E = self.e(0)
             I.addChild(E)
             self.acceptValue([";"])
 
+
         elif (self.checkValue(["break"])):    
             I = Node("nd_break", None)
             self.acceptValue([";"])
-
         elif (self.checkValue(["continue"])):    
             I = Node("nd_continue", None)
             self.acceptValue([";"])
-
         #type: ignore # the case of an : '{'  I* '}'
         elif (self.checkValue(['{'])):     
             I = Node("nd_block", None)                          
@@ -324,5 +324,6 @@ class Parser:
         else:
             self.currentPosition += 1
             return True
+
 
 

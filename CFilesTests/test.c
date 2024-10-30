@@ -23,104 +23,74 @@ int test_unary_operators() {
     return 0;
 }
 
-// // b. Binary Operators
-// int test_binary_operators() {
+// b. Binary Operators
+int test_binary_operators() {
 
-//     // Standard case
-//     int a;
-// 	int b;
-//     a = 5;
-//     b = 3;
-//     int c;
-//     c = a + b;
-//     debug c; // Expected: 8
+    // Standard case
+    int a;
+	int b;
+    a = 5;
+    b = 3;
+    int c;
+    c = a + b;
+    debug c; // Expected: 8
 
-//     // Complex case
-//     int d;
-//     d = a * b;
-//     debug d; // Expected: 15
+    // Complex case
+    int d;
+    d = a * b;
+    debug d; // Expected: 15
 
-// 	// TODO : KO test
-//     // Bottleneck case
-//     int e;
-//     e = (a * b) / (a - b);
-//     debug e; // Expected: -15
+    // Bottleneck case
+    int e;
+    e = (a * b) / (b - a);
+    debug e; // Expected: -7
 
-// 	// TODO : dependent on athoer feature
-//     // // Additional bottleneck with many operations
-//     // int f, g;
-//     // f = 1;
-//     // g = 0;
-//     // for (int i = 0; i < 1000000; i=i+1) {
-//     //     f = f * 2;
-//     //     g += f;
-//     // }
-//     // debug g; // Expected: large sum (overflow possible depending on int size)
+	// // TODO : dependent on athoer feature
+    // // Additional bottleneck with many operations
+    // int f;
+    // int g;
+    // f = 1;
+    // g = 0;
+    // for (int i = 0; i < 1000000; i=i+1) {
+    //     f = f * 2;
+    //     g = g + f;
+    // }
+    // debug g; // Expected: large sum (overflow possible depending on int size)
 
-//     return 0;
-// }
+    return 0;
+}
 
 
-// // c. Expressions
-// int test_expressions() {
+// c. Expressions
+int test_expressions() {
 
-//     // Standard case
-//     int b;
-//     b = 5;
-//     int c;
-//     c = 3;
-//     int d;
-//     d = 2;
-//     int result;
-//     result = (b + c) * d;
-//     debug result; // Expected: 16
+    // Standard case
+    int b;
+    b = 5;
+    int c;
+    c = 3;
+    int d;
+    d = 2;
+    int result;
+    result = (b + c) * d;
+    debug result; // Expected: 16
 
-//     // Complex case (resultat decimal)
-//     int complex_result;
-//     complex_result = (((b + c) * d) - d) / (b - c);
-//     debug complex_result; // Expected: Complex expression result = 7
+    // Complex case (resultat decimal)
+    int complex_result;
+    complex_result = (((b + c) * d) - d) / (b - c);
+    debug complex_result; // Expected: Complex expression result = 7
 
-// 	// TODO : KO test giving 60 instead of 61
-//     // Bottleneck case: deeply nested expressions (resultat decimal)
-//     int depth;
-//     depth = (((((((b + c) * d) + d) - b) * c) + d) / d) * c;
-//     debug depth; // Expected: Deeply nested result = 61
+	// TODO : KO test giving 60 instead of 61
+    // Bottleneck case: deeply nested expressions (resultat decimal)
+    int depth;
+    depth = (((((((b + c) * d) + d) - b) * c) + d) / d) * c;
+    debug depth; // Expected: Deeply nested result = 61
 
-//     return 0;
-// }
+    return 0;
+}
 
-// // d. Loops
-// int test_loops() {
-//     // Standard case
-//     int i;
-//     for (i = 0; i < 3; i=i+1) {
-//         debug i; // Expected: 0, 1, 2
-//     }
-
-//     // Complex case: Nested loops
-//     int j, sum;
-//     sum = 0;
-//     for (i = 0; i < 10; i=i+1) {
-//         for (j = 0; j < 10; j=j+1) {
-//             sum += i * j;
-//         }
-//     }
-//     debug sum; // Expected: Sum of 10x10 matrix of i*j = 2025
-
-//     // Bottleneck case: large iteration loop
-//     int large_sum;
-//     large_sum = 0;
-//     for (i = 0; i < 1000000; i=i+1) {
-//         large_sum += i;
-//     }
-//     debug large_sum; // Expected: 499999500000
-
-//     return 0;
-// }
-
-// d prime. Loops (for while do-while) break and continue
-
-int test_loops2(){
+// d. Loops
+int test_loops() {
     // Standard case
     int i;
     for (i = 0; i < 3; i=i+1) {
@@ -133,7 +103,7 @@ int test_loops2(){
     sum = 0;
     for (i = 0; i < 10; i=i+1) {
         for (j = 0; j < 10; j=j+1) {
-            sum = sum + i * j;
+            sum = sum + (i * j);
         }
     }
     debug sum; // Expected: Sum of 10x10 matrix of i*j = 2025
@@ -141,11 +111,10 @@ int test_loops2(){
     // Bottleneck case: large iteration loop
     int large_sum;
     large_sum = 0;
-    for (i = 0; i < 1000; i=i+1) {
-        large_sum = large_sum + i;
+    for (i = 0; i < 10000;i=i+1) {
+        large_sum = large_sum+i;
     }
     debug large_sum; // Expected: 499999500
-
     // break
     int k;
     for (k = 0; k < 10; k=k+1) {
@@ -181,10 +150,8 @@ int test_loops2(){
         debug n; // Expected: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
         n=n+1;
     } while (n < 10);
-
     return 0;
 }
-
 
 // // e. Variables
 // int test_variables() {
@@ -214,84 +181,90 @@ int test_loops2(){
 //     return 0;
 // }
 
-// // f. Instructions (if-else)
-// int test_instructions() {
-//     // Standard case
-//     int a, b;
-//     a = 5;
-//     b = 3;
-//     int result;
-//     if (a < b) {
-//         result = 1;
-//     } else {
-//         result = 0;
-//     }
-//     debug result; // Expected: 1
+// f. Instructions (if-else)
+int test_instructions() {
+    // Standard case
+    int a;
+    int b;
+    a = 5;
+    b = 3;
+    int result;
+    if (a < b) {
+        result = 1;
+    } else {
+        result = 0;
+    }
+    debug result; // Expected: 0
 
-// 	// will not be used for the moment
-//     // // Complex case
-//     // int large_conditional;
-//     // large_conditional = 0;
-//     // for (int i = 0; i < 10000; i=i+1) {
-//     //     if (i % 2 == 0) {
-//     //         large_conditional += i;
-//     //     }
-//     // }
-//     // debug large_conditional; // Expected: Sum of even numbers under 10000
+	// will not be used for the moment
+    // Complex case
+    int i;
+    int large_conditional;
+    large_conditional = 0;
+    for (i = 0; i < 11; i=i+1) {
+        if (i % 2 == 0) {
+            large_conditional = large_conditional + i;
+        }
+    }
+    debug large_conditional; // Expected: 30
 
-//     return 0;
-// }
+    return 0;
+}
 
 // g. Functions
-// int add(int a, int b) {
-//     return a + b;
-// }
+int add(int a, int b) {
+    return a + b;
+}
+// Bottleneck case: recursion
+int factorial(int n) {
+    if (n <= 1) return 1;
+    int res; 
+    res = factorial(n - 1);
+    res = res * n ;
+    return res;
+}
 
-// int test_functions() {
-//     // Standard case
-//     int result;
-//     result = add(5, 3);
-//     debug result; // Expected: 8
+int test_functions() {
+    // Standard case
+    int result;
+    result = add(5, 3);
+    debug result; // Expected: 8
 
-//     // Complex case: multiple function calls
-//     int complex_result;
-//     complex_result = add(add(5, 3), add(4, 2));
-//     debug complex_result; // Expected: 14
+    // Complex case: multiple function calls
+    int complex_result;
+    complex_result = add(add(5, 3), add(4, 2));
+    debug complex_result; // Expected: 14
 
-// 	// TODO : KO test for the moment the issue is expected to related to the if condition
-//     // // Bottleneck case: recursion
-//     // int factorial(int n) {
-//     //     if (n <= 1) return 1;
-//     //     return n * factorial(n - 1);
-//     // }
+	// TODO : Cannot declare a function in a function
+    // Bottleneck case: recursion
+    int fact;
+    fact = factorial(10);
+    debug fact; // Expected: 3628800
 
-//     // int fact;
-//     // fact = factorial(10);
-//     // debug fact; // Expected: 3628800
-
-//     return 0;
-// }
+    return 0;
+}
 
 // // h. Pointers
 // int test_pointers() {
 //     // Standard case
 //     int a;
 //     a = 10;
-//     int* p = &a;
+//     int* p;
+//     p = &a;
 //     debug *p; // Expected: 10
 
-//     // Complex case: pointer arithmetic
-//     int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-//     int* ptr = arr;
-//     debug *(ptr + 5); // Expected: 5
+//     // // Complex case: pointer arithmetic
+//     // int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//     // int* ptr = arr;
+//     // debug *(ptr + 5); // Expected: 5
 
-//     // Bottleneck case: pointer arithmetic in loop
-//     int sum;
-//     sum = 0;
-//     for (int i = 0; i < 10; i=i+1) {
-//         sum += *(ptr + i);
-//     }
-//     debug sum; // Expected: 45
+//     // // Bottleneck case: pointer arithmetic in loop
+//     // int sum;
+//     // sum = 0;
+//     // for (int i = 0; i < 10; i++) {
+//     //     sum += *(ptr + i);
+//     // }
+//     // debug sum; // Expected: 45
 
 //     return 0;
 // }
@@ -316,31 +289,29 @@ int test_loops2(){
 
 int main() {
     
-	//Fully passed
+	//PASSED
     test_unary_operators();
-    debug 7009;
-    test_loops2();
 	
-	// //Pending
-    // test_binary_operators();
+	//PASSED
+    test_binary_operators();
 	
-	// //Pending
-    // test_expressions();
+	//PASSED
+    test_expressions();
     
-	//NOT TESTED
-	// test_loops();
+	//PASSED but TODO : did nto test while , do while, break, continue
+	test_loops();
     
-	//NOT TESTED
+	//NOT TESTED TODO : Write tests 
 	// test_variables();
     
-	//NOT TESTED
-	// test_instructions();
+	// NOT TESTED
+	test_instructions();
     
-	// //Pending
-	// test_functions();
+	//PASSED but TODO : Cannot declare a function in a function
+	test_functions();
 
 	//NOT TESTED
-    // test_pointers();
+    //test_pointers();
     
 	//NOT TESTED
 	// test_library();
