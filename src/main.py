@@ -10,16 +10,17 @@ assemblyGen = CodeGenerator()
 semantic = Semantic()
 
 
-if len(sys.argv) < 2:
+if len(sys.argv) < 3:
 	file_path = './Input/code.c'
+	standardLibFilePath = './StandardLibrary.c'
 else:
 	file_path = str(sys.argv[1])
+	standardLibFilePath = str(sys.argv[2])
 
 with open(file_path, 'r') as file:
 	file_content = file.read()
 
 
-standardLibFilePath = './standardLibrary.c'
 with open(standardLibFilePath, 'r') as file:
 	standardLibContent = file.read()
 
