@@ -9,15 +9,37 @@ import sys
 assemblyGen = CodeGenerator()
 semantic = Semantic()
 
-# get file path from command line
-# check if file path is provided
+
 if len(sys.argv) < 2:
-	file_path = './CFilesTests/test.c'
+	file_path = './Input/code.c'
 else:
 	file_path = str(sys.argv[1])
 
 with open(file_path, 'r') as file:
 	file_content = file.read()
+
+
+standardLibFilePath = './standardLibrary.c'
+with open(standardLibFilePath, 'r') as file:
+	standardLibContent = file.read()
+
+
+def compileStandardLibrary(standardLibContent):
+	"""
+	"""
+	#Lexical Analysis
+	lexer = Lexer(standardLibContent)
+	tokens = lexer.work()
+	#Syntax Analysis
+	parser = Parser(tokens)
+	# it = 0 
+	while parser.tokens[parser.currentPosition].value!="EOF":
+		# it+=1
+		N = parser.AnaSynt()
+		semantic.AnaSem(N) 
+		#N = Optimizer.Optim(N)
+		assemblyGen.genCode(N)
+		# print("drop", semantic.nvar
 
 def main():
 	"""
@@ -28,6 +50,9 @@ def main():
 	print("prep main")
 	print("call 0")
 	print("halt")
+
+	compileStandardLibrary(standardLibContent)
+	
 	#Lexical Analysis
 	lexer = Lexer(file_content)
 	tokens = lexer.work()

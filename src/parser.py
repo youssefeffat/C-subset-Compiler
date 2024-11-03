@@ -49,22 +49,10 @@ class Parser:
           := A ( '[' E ']' )?
         
         """
-        # A = self.a()
-        # if self.checkValue(["("]):
-        #     S = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          #TODO Node Value is correct ????? 
-        #     S.addChild(A)
-        #     if (not self.checkValue([")"])):
-        #         S.addChild(self.e(0))
-        #         while (not self.checkValue([")"])):
-        #             self.acceptValue([","])
-        #             S.addChild(self.e(0))
-        #     return S
-        # else:
-        #     return A
         R = self.a()
         if self.checkValue(["("]):
             C = R
-            R = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          #TODO Node Value is correct ????? 
+            R = Node("nd_function_call", self.tokens[self.currentPosition-2].value)                          
             R.addChild(C)
             if (self.checkValue([")"])):
              pass
@@ -72,7 +60,15 @@ class Parser:
                 R.addChild(self.e(0))
                 while (not self.checkValue([")"])):
                     self.acceptValue([","])
-                    R.addChild(self.e(0))      
+                    R.addChild(self.e(0))   
+        elif self.checkValue(["["]):
+            A = R
+            R = Node("nd_indirection", None)
+            Add = Node("nd_PLUS", None)
+            Add.addChild(A)
+            Add.addChild(self.e(0))
+            R.addChild(Add)
+            self.acceptValue(["]"])   
         return R
 
 

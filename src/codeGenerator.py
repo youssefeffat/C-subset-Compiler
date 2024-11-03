@@ -36,7 +36,7 @@ class CodeGenerator:
             self.genCode(Node.children[0])
             print("sub")
         
-        # 
+        #
         elif Node.type=="nd_block":
             for child in Node.children:
                 self.genCode(child)
