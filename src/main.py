@@ -4,13 +4,43 @@ from parser import Parser
 from semantic import Semantic
 from codeGenerator import CodeGenerator
 from resources import stack
+import sys
 
 assemblyGen = CodeGenerator()
 semantic = Semantic()
 
-file_path = './CFilesTests/test.c'
+
+if len(sys.argv) < 3:
+	file_path = './Input/code.c'
+	standardLibFilePath = './StandardLibrary.c'
+else:
+	file_path = str(sys.argv[1])
+	standardLibFilePath = str(sys.argv[2])
+
 with open(file_path, 'r') as file:
 	file_content = file.read()
+
+
+with open(standardLibFilePath, 'r') as file:
+	standardLibContent = file.read()
+
+
+def compileStandardLibrary(standardLibContent):
+	"""
+	"""
+	#Lexical Analysis
+	lexer = Lexer(standardLibContent)
+	tokens = lexer.work()
+	#Syntax Analysis
+	parser = Parser(tokens)
+	# it = 0 
+	while parser.tokens[parser.currentPosition].value!="EOF":
+		# it+=1
+		N = parser.AnaSynt()
+		semantic.AnaSem(N) 
+		#N = Optimizer.Optim(N)
+		assemblyGen.genCode(N)
+		# print("drop", semantic.nvar
 
 def main():
 	"""
@@ -21,6 +51,9 @@ def main():
 	print("prep main")
 	print("call 0")
 	print("halt")
+
+	compileStandardLibrary(standardLibContent)
+	
 	#Lexical Analysis
 	lexer = Lexer(file_content)
 	tokens = lexer.work()
